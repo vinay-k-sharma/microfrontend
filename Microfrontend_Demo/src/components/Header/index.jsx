@@ -4,7 +4,8 @@ import { useState } from "react";
 import { IoMenuOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { useLocation } from "react-router-dom";
-import 'tailwindcss/tailwind.css'
+import "tailwindcss/tailwind.css";
+
 const Header = () => {
   const [openModal, setOpenModal] = useState(false);
   // const [dropdownOpen, setDropdownOpen] = useState({});
@@ -14,69 +15,81 @@ const Header = () => {
     setOpenModal(!openModal);
   };
 
-
   return (
-    <div className="lg:px-24 px-4 bg-white flex flex-wrap items-center py-4 sticky top-0 z-50" id="header">
-      <div className="flex-1 flex justify-between items-center">
-        <Link to="/" className=" text-[30px] text-[#2d465e]">
-          MicroFrontend Demo
-        </Link>
-      </div>
+    <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link
+            to="/"
+            className="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text"
+          >
+            MicroFrontend Demo
+          </Link>
 
-      <div className="pointer-cursor lg:hidden block" onClick={toggleModal}>
-        <IoMenuOutline className="text-3xl"/>
-      </div>
+          {/* Mobile menu button */}
+          <button
+            className="lg:hidden text-gray-300 hover:text-white focus:outline-none"
+            onClick={toggleModal}
+          >
+            {openModal ? (
+              <IoMdClose className="text-2xl" />
+            ) : (
+              <IoMenuOutline className="text-2xl" />
+            )}
+          </button>
 
-      <div className="hidden lg:flex lg:items-center lg:w-auto w-full">
-        <nav>
-          <ul className="md:flex items-center justify-between text-base  pt-4 md:pt-0">
-            {Links.map((link) => (
-              <li key={link.label}>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex">
+            <ul className="flex space-x-8">
+              {Links.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                      location.pathname === link.slug
+                        ? "bg-gray-900 text-white"
+                        : "text-gray-300 hover:text-white hover:bg-gray-700"
+                    }`}
+                    to={link.slug}
+                  >
+                    <div className="flex items-center gap-2">
+                      {link.label}
+                      {link.icon && (
+                        <span className="text-lg">{link.icon}</span>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        {/* Mobile Navigation */}
+        {openModal && (
+          <div className="lg:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {Links.map((link) => (
                 <Link
-                  className={`md:p-4 py-3 px-0 block transition-all duration-200 ease-in-out hover:text-[#34BF49] ${
-                    location.pathname === link.slug ? "text-[#34BF49]" : ""
+                  key={link.label}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    location.pathname === link.slug
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:text-white hover:bg-gray-700"
                   }`}
                   to={link.slug}
+                  onClick={() => setOpenModal(false)}
                 >
-                  <div className="flex gap-1">
-                  {link.label}
-                  {
-                    link.icon ? <span className="mt-1">{link.icon}</span> : null
-                  }
+                  <div className="flex items-center gap-2">
+                    {link.label}
+                    {link.icon && <span className="text-lg">{link.icon}</span>}
                   </div>
                 </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      {openModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex flex-col items-center justify-center">
-          <ul className="relative p-5 flex flex-col bg-white w-[95%] h-[80%] gap-6 text-lg">
-            {Links.map((link) => (
-              <li key={link.label} className="cursor-pointer">
-                <Link
-                  className={`block ${
-                    location.pathname === link.slug ? "text-[#34bf49]" : ""
-                  }`}
-                  to={link.slug}
-                  onClick={toggleModal}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-            <div
-              className="absolute -top-10 text-white right-0 text-3xl cursor-pointer"
-              onClick={toggleModal}
-            >
-              <IoMdClose className="text-3xl"/>
+              ))}
             </div>
-          </ul>
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    </header>
   );
 };
 
